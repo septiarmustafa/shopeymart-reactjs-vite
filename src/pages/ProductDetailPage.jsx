@@ -21,7 +21,7 @@ const ProductDetailPage = () => {
     setLoadingAddToCart(true);
 
     setTimeout(() => {
-      dispatch(addCart(product));
+      addProduct(product);
       setLoadingAddToCart(false);
     }, 2000);
   };
