@@ -33,7 +33,7 @@ const Products = () => {
     setLoadingAddToCart((prev) => ({ ...prev, [product.id]: true }));
 
     setTimeout(() => {
-      dispatch(addCart(product));
+      addProduct(product);
       setLoadingAddToCart((prev) => ({ ...prev, [product.id]: false }));
     }, 2000);
   };
