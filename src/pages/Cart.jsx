@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { addCart, delCart } from "../redux/action";
+import { addCart, delCart, removeItemCart } from "../redux/action";
 import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
@@ -27,18 +27,23 @@ const Cart = () => {
   const addItem = (product) => {
     dispatch(addCart(product));
   };
-  const removeItem = (product) => {
-    if (product.qty != 0) {
+
+  const removeItemInCart = (index) => {
+    dispatch(removeItemCart(index));
+  };
+
+  const removeItem = (product, index) => {
+    if (product.qty > 1) {
       dispatch(delCart(product));
+    } else {
+      removeItemInCart(index);
     }
   };
-  // const removeItem = (product) => {
-  //   dispatch(delCart(product));
-  // };
   const ShowCart = () => {
     let subtotal = 0;
     let shipping = 9000;
     let totalItems = 0;
+
     state.map((item) => {
       return (subtotal += item.price * item.qty);
     });
@@ -58,7 +63,7 @@ const Cart = () => {
                     <h5 className="mb-0">Item List</h5>
                   </div>
                   <div className="card-body">
-                    {state.map((item) => (
+                    {state.map((item, index) => (
                       <div key={item.id}>
                         <div className="row d-flex align-items-center">
                           <div className="col-lg-3 col-md-12">
@@ -89,7 +94,7 @@ const Cart = () => {
                               <button
                                 className="btn px-3"
                                 onClick={() => {
-                                  removeItem(item);
+                                  removeItem(item, index);
                                 }}
                               >
                                 <i className="bi bi-dash-circle-fill"></i>

@@ -1,4 +1,4 @@
-import { addItem, removeItem } from "./cartSlice";
+import { addItem, removeItem, removeCartItem } from "./cartSlice";
 
 export const addCart = (product) => {
   return (dispatch) => {
@@ -9,5 +9,11 @@ export const addCart = (product) => {
 export const delCart = (product) => {
   return (dispatch) => {
     dispatch(removeItem(product));
+  };
+};
+
+export const removeItemCart = (product) => {
+  return (dispatch) => {
+    dispatch(removeCartItem(product));
   };
 };
