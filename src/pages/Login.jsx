@@ -1,15 +1,12 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { loginSuccess } from "../redux/authSlice";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
   const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
@@ -18,11 +15,18 @@ const Login = () => {
     try {
       setLoading(true);
 
+      const response = await axios.post(
+        "http://localhost:8081/api/auth/login",
+        {
+          username,
+          password,
+        }
+      );
+
       await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      dispatch(loginSuccess({ username, password }));
-
-      if (username === "admin" && password === "admin") {
+      console.log(response);
+      if (response.data.status == 200) {
+        localStorage.setItem("token", response.data.data.token);
         navigate("/home");
       } else {
         setError("Invalid username or password. Please try again.");
@@ -40,14 +44,13 @@ const Login = () => {
       <hr />
       <div className="row my-4 h-100">
         <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
-          <form>
+          <form method="post">
             <div className="my-3">
               <label htmlFor="username">Username</label>
               <input
                 type="text"
                 className="form-control"
                 id="username"
-                placeholder="hint: admin"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
@@ -58,7 +61,6 @@ const Login = () => {
                 type="password"
                 className="form-control"
                 id="password"
-                placeholder="hint: admin"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -80,6 +82,7 @@ const Login = () => {
                 className="my-2 mx-auto btn btn-dark"
                 type="submit"
                 onClick={handleLogin}
+                formMethod="post"
               >
                 {loading ? "Logging in..." : "Login"}
               </button>

@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import "bootstrap/dist/js/bootstrap.bundle";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -10,22 +10,42 @@ import ProductsPage from "./pages/ProductsPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import { useEffect } from "react";
 
 function App() {
+  const token = localStorage.getItem("token");
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token && location.pathname !== "/") {
+      navigate("/");
+    }
+    if (token && location.pathname === "/") {
+      navigate("/home");
+    }
+  }, [token]);
+
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route index element={<Login />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/product" element={<ProductsPage />} />
-          <Route path="/product/:id" element={<ProductDetailPage />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-        </Routes>
-      </BrowserRouter>
+      <Routes>
+        <Route index element={<Login />} />
+        {token ? (
+          <>
+            <Route path="/home" element={<Home />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/product" element={<ProductsPage />} />
+            <Route path="/product/:id" element={<ProductDetailPage />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+          </>
+        ) : (
+          <>
+            <Route path="/" element={<Login />} />
+          </>
+        )}
+      </Routes>
     </>
   );
 }

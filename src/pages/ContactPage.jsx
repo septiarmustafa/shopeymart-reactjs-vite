@@ -12,7 +12,7 @@ const ContactPage = () => {
           <div className="col-md-4 col-lg-4 col-sm-8 mx-auto">
             <form>
               <div className="form my-3">
-                <label for="Name">Name</label>
+                <label htmlFor="Name">Name</label>
                 <input
                   type="email"
                   className="form-control"
@@ -21,7 +21,7 @@ const ContactPage = () => {
                 />
               </div>
               <div className="form my-3">
-                <label for="Email">Email</label>
+                <label htmlFor="Email">Email</label>
                 <input
                   type="email"
                   className="form-control"
@@ -30,7 +30,7 @@ const ContactPage = () => {
                 />
               </div>
               <div className="form  my-3">
-                <label for="Password">Message</label>
+                <label htmlFor="Password">Message</label>
                 <textarea
                   rows={5}
                   className="form-control"
