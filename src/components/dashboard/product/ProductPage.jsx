@@ -23,21 +23,15 @@ const ProductPage = ({
 }) => {
   return (
     <>
-      <div className="row">
-        <div className="col-lg-3">
-          {" "}
-          <Menu />
-        </div>
-        <div className="col-lg-8">
-          <ListProduct
-            products={products}
-            handleDelete={handleDelete}
-            handleUpdate={handleUpdate}
-            handleViewDetail={handleViewDetail}
-            setShowUpdateModal={setShowUpdateModal}
-            handleAddProduct={handleAddProduct}
-          />
-        </div>
+      <div className="col-lg-8">
+        <ListProduct
+          products={products}
+          handleDelete={handleDelete}
+          handleUpdate={handleUpdate}
+          handleViewDetail={handleViewDetail}
+          setShowUpdateModal={setShowUpdateModal}
+          handleAddProduct={handleAddProduct}
+        />
       </div>
       <div className="m-2">
         <UpdateProductModal
@@ -48,7 +42,6 @@ const ProductPage = ({
           handleSaveUpdate={handleSaveUpdate}
         />
       </div>
-
       <div className="m-2">
         <AddProductModal
           isOpen={showAddModal}

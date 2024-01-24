@@ -5,6 +5,7 @@ import http from "../config/httpConfig";
 import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
 import ProductPage from "../components/dashboard/product/ProductPage";
+import { Menu } from "../components/dashboard/Menu";
 Modal.setAppElement("#root");
 
 const DashboardAdmin = () => {
@@ -122,23 +123,29 @@ const DashboardAdmin = () => {
   return (
     <>
       <Navbar />
-      <ProductPage
-        products={products}
-        handleDelete={handleDelete}
-        handleUpdate={handleUpdate}
-        handleViewDetail={handleViewDetail}
-        setShowUpdateModal={setShowUpdateModal}
-        handleAddProduct={handleAddProduct}
-        showUpdateModal={showUpdateModal}
-        handleCloseModal={handleCloseModal}
-        updatedProductData={updatedProductData}
-        setUpdatedProductData={setUpdatedProductData}
-        handleSaveUpdate={handleSaveUpdate}
-        showAddModal={showAddModal}
-        newProductData={newProductData}
-        setNewProductData={setNewProductData}
-        handleSaveProduct={handleSaveProduct}
-      />
+      <div className="row">
+        <div className="col-lg-3">
+          {" "}
+          <Menu />
+        </div>
+        <ProductPage
+          products={products}
+          handleDelete={handleDelete}
+          handleUpdate={handleUpdate}
+          handleViewDetail={handleViewDetail}
+          setShowUpdateModal={setShowUpdateModal}
+          handleAddProduct={handleAddProduct}
+          showUpdateModal={showUpdateModal}
+          handleCloseModal={handleCloseModal}
+          updatedProductData={updatedProductData}
+          setUpdatedProductData={setUpdatedProductData}
+          handleSaveUpdate={handleSaveUpdate}
+          showAddModal={showAddModal}
+          newProductData={newProductData}
+          setNewProductData={setNewProductData}
+          handleSaveProduct={handleSaveProduct}
+        />
+      </div>
       <Footer />
     </>
   );
