@@ -6,12 +6,15 @@ import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
 import ProductPage from "../components/dashboard/product/ProductPage";
 import { Menu } from "../components/dashboard/Menu";
+import CustomerPage from "../components/dashboard/customer/CustomerPage";
 Modal.setAppElement("#root");
 
 const DashboardAdmin = () => {
+  const [customers, setCustomers] = useState([]);
   const [products, setProducts] = useState([]);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [content, setContent] = useState("products");
 
   const navigate = useNavigate();
   const [updatedProductData, setUpdatedProductData] = useState({
@@ -36,14 +39,54 @@ const DashboardAdmin = () => {
 
   useEffect(() => {
     fetchProducts();
+    fetchCustomers();
   }, []);
 
   const fetchProducts = async () => {
     try {
       const response = await http.get("/product");
-      setProducts(response.data.data);
+
+      if (Array.isArray(response.data.data)) {
+        setProducts(response.data.data);
+      } else {
+        console.log("Data is not array:" + response.data.data);
+      }
     } catch (error) {
       console.error("Error fetching products:", error);
+    }
+  };
+
+  const fetchCustomers = async () => {
+    try {
+      const response = await http.get("/customer");
+      console.log(response);
+
+      const customersData = response.data;
+
+      if (customersData !== undefined) {
+        if (Array.isArray(customersData)) {
+          setCustomers(customersData);
+        } else {
+          console.log("Data is not array:", customersData);
+        }
+      } else {
+        console.log("Data is undefined");
+      }
+    } catch (error) {
+      console.error("Error fetching customers:", error);
+    }
+  };
+
+  const handleUpdateCustomer = (customerId) => {};
+
+  const handleDeleteCustomer = async (customerId) => {
+    try {
+      await http.delete(`/customer/${customerId}`);
+      setCustomers((prevCustomers) =>
+        prevCustomers.filter((customer) => customer.id !== customerId)
+      );
+    } catch (error) {
+      console.error("Error deleting customer:", error);
     }
   };
 
@@ -120,32 +163,46 @@ const DashboardAdmin = () => {
     setShowAddModal(false);
   };
 
+  const handleMenuClick = (menuItem) => {
+    setContent(menuItem);
+  };
+
   return (
     <>
       <Navbar />
       <div className="row">
         <div className="col-lg-3">
           {" "}
-          <Menu />
+          <Menu handleMenuClick={handleMenuClick} />
         </div>
-        <ProductPage
-          products={products}
-          handleDelete={handleDelete}
-          handleUpdate={handleUpdate}
-          handleViewDetail={handleViewDetail}
-          setShowUpdateModal={setShowUpdateModal}
-          handleAddProduct={handleAddProduct}
-          showUpdateModal={showUpdateModal}
-          handleCloseModal={handleCloseModal}
-          updatedProductData={updatedProductData}
-          setUpdatedProductData={setUpdatedProductData}
-          handleSaveUpdate={handleSaveUpdate}
-          showAddModal={showAddModal}
-          newProductData={newProductData}
-          setNewProductData={setNewProductData}
-          handleSaveProduct={handleSaveProduct}
-        />
+        {content === "products" && (
+          <ProductPage
+            products={products}
+            handleDelete={handleDelete}
+            handleUpdate={handleUpdate}
+            handleViewDetail={handleViewDetail}
+            setShowUpdateModal={setShowUpdateModal}
+            handleAddProduct={handleAddProduct}
+            showUpdateModal={showUpdateModal}
+            handleCloseModal={handleCloseModal}
+            updatedProductData={updatedProductData}
+            setUpdatedProductData={setUpdatedProductData}
+            handleSaveUpdate={handleSaveUpdate}
+            showAddModal={showAddModal}
+            newProductData={newProductData}
+            setNewProductData={setNewProductData}
+            handleSaveProduct={handleSaveProduct}
+          />
+        )}
+        {content === "customers" && (
+          <CustomerPage
+            customers={customers}
+            handleDeleteCustomer={handleDeleteCustomer}
+            handleUpdateCustomer={handleUpdateCustomer}
+          />
+        )}
       </div>
+
       <Footer />
     </>
   );

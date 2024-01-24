@@ -12,7 +12,6 @@ const ProductDetailPage = () => {
   const dispatch = useDispatch();
   const [product, setProduct] = useState({});
   const [loadingAddToCart, setLoadingAddToCart] = useState(false);
-  const [isDetail, setIsDetail] = useState(false);
 
   const addProduct = (product) => {
     dispatch(addCart(product));

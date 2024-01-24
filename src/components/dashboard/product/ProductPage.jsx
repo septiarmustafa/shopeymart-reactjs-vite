@@ -1,6 +1,5 @@
 import React from "react";
 import { ListProduct } from "./ListProduct";
-import { Menu } from "../Menu";
 import { UpdateProductModal } from "./UpdateProductModal";
 import { AddProductModal } from "./AddProductModal";
 
