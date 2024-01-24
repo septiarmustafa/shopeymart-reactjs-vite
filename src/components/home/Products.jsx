@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addCart } from "../redux/action";
+import { addCart } from "../../redux/action";
 import { useNavigate } from "react-router-dom";
-import http from "../config/httpConfig";
-import { formatProductForCart } from "../util/FormatProductCart";
+import http from "../../config/httpConfig";
+import { formatProductForCart } from "../../util/FormatProductCart";
 
 const Products = () => {
   const dispatch = useDispatch();
