@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { BASE_URL } from "../config/baseUrl";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -16,10 +17,15 @@ const Login = () => {
       setLoading(true);
 
       const response = await axios.post(
-        "http://localhost:8081/api/auth/login",
+        BASE_URL + "/api/auth/login",
         {
           username,
           password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -27,7 +33,8 @@ const Login = () => {
       console.log(response);
       if (response.data.status == 200) {
         localStorage.setItem("token", response.data.data.token);
-        navigate("/home");
+        localStorage.setItem("role", response.data.data.role);
+        navigate("/");
       } else {
         setError("Invalid username or password. Please try again.");
       }

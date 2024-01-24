@@ -5,16 +5,18 @@ import { useSelector } from "react-redux";
 const Navbar = () => {
   const state = useSelector((state) => state.cart);
   const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
     navigate("/login");
   };
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light py-3 sticky-top">
       <div className="container">
-        <NavLink className="navbar-brand fw-bold fs-4 px-2" to="/home">
+        <NavLink className="navbar-brand fw-bold fs-4 px-2" to="/">
           {" "}
           SopiMart
         </NavLink>
@@ -33,7 +35,7 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav m-auto my-2 text-center">
             <li className="nav-item">
-              <NavLink className="nav-link" to="/home">
+              <NavLink className="nav-link" to="/">
                 Home{" "}
               </NavLink>
             </li>
@@ -62,10 +64,6 @@ const Navbar = () => {
                 <NavLink to="/register" className="btn btn-outline-dark m-2">
                   <i className="fa fa-user-plus mr-1"></i> Register
                 </NavLink>
-                <NavLink to="/cart" className="btn btn-outline-dark m-2">
-                  <i className="fa fa-cart-shopping mr-1"></i> Cart (
-                  {state.length}){" "}
-                </NavLink>
               </div>
             </>
           ) : (
@@ -74,9 +72,11 @@ const Navbar = () => {
                 <i className="fa fa-cart-shopping mr-1"></i> Cart (
                 {state.length}){" "}
               </NavLink>
-              <NavLink to="/dashboard" className="btn btn-outline-dark m-2">
-                Dashboard
-              </NavLink>
+              {role === "ROLE_ADMIN" && (
+                <NavLink to="/dashboard" className="btn btn-outline-dark m-2">
+                  Dashboard
+                </NavLink>
+              )}
               <NavLink
                 onClick={handleLogout}
                 to="/"

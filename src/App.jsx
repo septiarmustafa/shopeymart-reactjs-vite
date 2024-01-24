@@ -16,37 +16,36 @@ import DashboardAdmin from "./pages/DashboardAdmin";
 
 function App() {
   const token = localStorage.getItem("token");
-  const location = useLocation();
+  const role = localStorage.getItem("role");
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!token) {
       navigate("/");
     }
-    if (token && location.pathname === "/") {
-      navigate("/home");
-    }
   }, [token]);
 
   return (
     <>
       <Routes>
-        <Route index element={<Login />} />
+        <Route index element={<Home />} />
         {token ? (
           <>
-            <Route path="/home" element={<Home />} />
+            <Route path="/" element={<Home />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/product" element={<ProductsPage />} />
             <Route path="/product/:id" element={<ProductDetailPage />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
-            <Route path="/dashboard" element={<DashboardAdmin />} />
+            {role === "ROLE_ADMIN" && (
+              <Route path="/dashboard" element={<DashboardAdmin />} />
+            )}
           </>
         ) : (
           <>
             <Route path="/register" element={<Register />} />
-            <Route path="/" element={<Login />} />
+            <Route path="/login" element={<Login />} />
           </>
         )}
       </Routes>
