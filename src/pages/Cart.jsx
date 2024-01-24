@@ -73,7 +73,7 @@ const Cart = () => {
                             >
                               <img
                                 src={item.image}
-                                alt={item.title}
+                                alt={item.name}
                                 width={100}
                                 height={75}
                               />
@@ -82,7 +82,7 @@ const Cart = () => {
 
                           <div className="col-lg-5 col-md-6">
                             <p>
-                              <strong>{item.title}</strong>
+                              <strong>{item.name}</strong>
                             </p>
                           </div>
 

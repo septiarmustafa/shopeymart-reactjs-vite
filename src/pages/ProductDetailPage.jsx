@@ -1,17 +1,18 @@
 import { Link, useParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addCart } from "../redux/action";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import http from "../config/httpConfig";
+import { formatProductForCart } from "../util/FormatProductCart";
 
 const ProductDetailPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const product = useSelector((state) =>
-    state.product.find((product) => product.id === parseInt(id))
-  );
+  const [product, setProduct] = useState({});
   const [loadingAddToCart, setLoadingAddToCart] = useState(false);
+  const [isDetail, setIsDetail] = useState(false);
 
   const addProduct = (product) => {
     dispatch(addCart(product));
@@ -21,10 +22,24 @@ const ProductDetailPage = () => {
     setLoadingAddToCart(true);
 
     setTimeout(() => {
-      addProduct(product);
+      const formattedProduct = formatProductForCart(product);
+      addProduct(formattedProduct);
       setLoadingAddToCart(false);
     }, 2000);
   };
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await http.get(`/product/${id}`);
+        setProduct(response.data.data);
+      } catch (error) {
+        console.error("Error fetching product data:", error);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
 
   const ShowProduct = () => {
     return (
@@ -35,20 +50,19 @@ const ProductDetailPage = () => {
               <img
                 className="img-fluid"
                 src={product.image}
-                alt={product.title}
+                alt={product.productName}
                 width="400px"
                 height="400px"
               />
             </div>
             <div className="col-md-6 col-md-6 py-5">
-              <h4 className="text-uppercase text-muted">{product.category}</h4>
-              <h1 className="display-5">{product.title}</h1>
-              <p className="lead">
-                <i className="bi bi-star-fill me-2"></i>
-                {product.rating && product.rating.rate}{" "}
-              </p>
+              <h4 className="text-uppercase text-muted"></h4>
+              <h1 className="display-5">{product.productName}</h1>
+
               <h3 className="display-6  my-4">Rp {product.price}</h3>
-              <p className="lead">{product.description}</p>
+              <p className="lead">
+                {product.desc || "No description available"}
+              </p>
               <button
                 className="btn btn-dark m-1"
                 onClick={() => handleAddToCart(product)}

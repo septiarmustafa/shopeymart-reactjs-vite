@@ -74,6 +74,9 @@ const Navbar = () => {
                 <i className="fa fa-cart-shopping mr-1"></i> Cart (
                 {state.length}){" "}
               </NavLink>
+              <NavLink to="/dashboard" className="btn btn-outline-dark m-2">
+                Dashboard
+              </NavLink>
               <NavLink
                 onClick={handleLogout}
                 to="/"

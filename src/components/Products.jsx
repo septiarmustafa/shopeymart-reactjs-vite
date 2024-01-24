@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { addCart } from "../redux/action";
 import { useNavigate } from "react-router-dom";
+import http from "../config/httpConfig";
+import { formatProductForCart } from "../util/FormatProductCart";
 
 const Products = () => {
   const dispatch = useDispatch();
-  const data = useSelector((state) => state.product);
+  const [data, setData] = useState([]);
   const [filter, setFilter] = useState(data);
   const [loadingBuy, setLoadingBuy] = useState({});
   const [loadingAddToCart, setLoadingAddToCart] = useState({});
@@ -15,10 +17,24 @@ const Products = () => {
     dispatch(addCart(product));
   };
 
-  const filterProduct = (cat) => {
-    const updatedList = data.filter((item) => item.category === cat);
-    setFilter(updatedList);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await http.get("/product");
+        console.log(response.data.data);
+        setData(response.data.data);
+        setFilter(response.data.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  // const filterProduct = (cat) => {
+  //   const updatedList = data.filter((item) => item.category === cat);
+  //   setFilter(updatedList);
+  // };
 
   const handleBuyNow = async (productId) => {
     setLoadingBuy((prev) => ({ ...prev, [productId]: true }));
@@ -33,7 +49,8 @@ const Products = () => {
     setLoadingAddToCart((prev) => ({ ...prev, [product.id]: true }));
 
     setTimeout(() => {
-      addProduct(product);
+      const formattedProduct = formatProductForCart(product);
+      addProduct(formattedProduct);
       setLoadingAddToCart((prev) => ({ ...prev, [product.id]: false }));
     }, 2000);
   };
@@ -41,7 +58,7 @@ const Products = () => {
   const ShowProducts = () => {
     return (
       <>
-        <div className="buttons text-center py-5">
+        {/* <div className="buttons text-center py-5">
           <button
             className="btn btn-outline-dark btn-sm m-2"
             onClick={() => setFilter(data)}
@@ -72,7 +89,7 @@ const Products = () => {
           >
             Electronics
           </button>
-        </div>
+        </div> */}
 
         {filter.map((product) => {
           const isBuyNowLoading = loadingBuy[product.id] || false;
@@ -91,15 +108,15 @@ const Products = () => {
                   height={300}
                 />
                 <div className="card-body">
-                  <h5 className="card-title">
-                    {product.title.substring(0, 12)}...
-                  </h5>
+                  <h5 className="card-title">{product.name}</h5>
                   <p className="card-text">
-                    {product.description.substring(0, 90)}...
+                    {product.description || "No description available"}
                   </p>
                 </div>
                 <ul className="list-group list-group-flush">
-                  <li className="list-group-item lead">Rp {product.price}</li>
+                  <li className="list-group-item lead">
+                    Rp {product.productPrice[0].price}
+                  </li>
                 </ul>
                 <div className="card-body">
                   <button

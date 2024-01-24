@@ -12,6 +12,7 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import { useEffect } from "react";
 import Register from "./pages/Register";
+import DashboardAdmin from "./pages/DashboardAdmin";
 
 function App() {
   const token = localStorage.getItem("token");
@@ -40,6 +41,7 @@ function App() {
             <Route path="/product/:id" element={<ProductDetailPage />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/dashboard" element={<DashboardAdmin />} />
           </>
         ) : (
           <>
