@@ -1,8 +1,11 @@
-# React + Vite
+Repository Spring Boot :
+https://git.enigmacamp.com/enigma-camp/offline-class-pascal/pascal-14/septiar/backend/hands-on/spring-boot.git
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Ada penambahan backend :
 
-Currently, two official plugins are available:
+- Get by id Product
+- Get All Products
+- Delete Product
+- Update Product
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Dokumentasi API POSTMAN : di file sopimart_postman.json
