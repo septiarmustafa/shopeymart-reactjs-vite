@@ -3,11 +3,14 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import http from "../config/httpConfig";
 import Modal from "react-modal";
+import { useNavigate } from "react-router-dom";
 Modal.setAppElement("#root");
 const DashboardAdmin = () => {
   const [products, setProducts] = useState([]);
-  const [productId, setProductId] = useState("");
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  const navigate = useNavigate();
   const [updatedProductData, setUpdatedProductData] = useState({
     productId: "",
     productName: "",
@@ -18,6 +21,20 @@ const DashboardAdmin = () => {
       id: "6e8b1086-e294-4d47-abe7-7faeaba3caca",
     },
   });
+  const [newProductData, setNewProductData] = useState({
+    productName: "",
+    desc: "",
+    price: "",
+    stock: 0,
+    storeId: {
+      id: "6e8b1086-e294-4d47-abe7-7faeaba3caca",
+    },
+  });
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   const fetchProducts = async () => {
     try {
       const response = await http.get("/product");
@@ -27,19 +44,28 @@ const DashboardAdmin = () => {
     }
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const handleDelete = async (productId) => {
+  const handleSaveProduct = async () => {
     try {
-      await http.delete(`/product/${productId}`);
-      setProducts((prevProducts) =>
-        prevProducts.filter((product) => product.id !== productId)
-      );
+      await http.post(`/product`, newProductData);
+      setShowAddModal(false);
+      fetchProducts();
     } catch (error) {
-      console.error("Error deleting product:", error);
+      console.error("Error added product:", error);
     }
+  };
+
+  const handleAddProduct = () => {
+    setShowAddModal(true);
+
+    setNewProductData({
+      productName: newProductData.productName,
+      desc: newProductData.desc,
+      price: newProductData.price,
+      stock: newProductData.stock,
+      storeId: {
+        id: "6e8b1086-e294-4d47-abe7-7faeaba3caca",
+      },
+    });
   };
 
   const handleUpdate = (productId) => {
@@ -47,7 +73,6 @@ const DashboardAdmin = () => {
       (product) => product.id === productId
     );
     setShowUpdateModal(true);
-    setProductId(productId);
 
     setUpdatedProductData({
       productId: productId,
@@ -61,10 +86,6 @@ const DashboardAdmin = () => {
     });
   };
 
-  const handleCloseModal = () => {
-    setShowUpdateModal(false);
-  };
-
   const handleSaveUpdate = async () => {
     try {
       await http.put(`/product`, updatedProductData);
@@ -75,8 +96,25 @@ const DashboardAdmin = () => {
     }
   };
 
+  const handleDelete = async (productId) => {
+    try {
+      await http.delete(`/product/${productId}`);
+      setProducts((prevProducts) =>
+        prevProducts.filter((product) => product.id !== productId)
+      );
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
+
   const handleViewDetail = (productId) => {
-    console.log(`View details for product with ID: ${productId}`);
+    navigate(`/product/${productId}`);
+    console.log(`${productId}`);
+  };
+
+  const handleCloseModal = () => {
+    setShowUpdateModal(false);
+    setShowAddModal(false);
   };
 
   const Menu = () => {
@@ -107,6 +145,7 @@ const DashboardAdmin = () => {
       </>
     );
   };
+
   const ListProduct = ({
     products,
     handleDelete,
@@ -138,13 +177,13 @@ const DashboardAdmin = () => {
                   <td>{product.productPrice[0].stock}</td>
                   <td>
                     <button
-                      className="btn btn-danger btn-sm mr-2"
-                      onClick={() => handleDelete(product.id)}
+                      className="btn btn-success btn-sm mr-2 me-2"
+                      onClick={() => handleAddProduct()}
                     >
-                      Delete
+                      Add
                     </button>
                     <button
-                      className="btn btn-primary btn-sm mr-2"
+                      className="btn btn-primary btn-sm mr-2 me-2"
                       onClick={() => {
                         handleUpdate(product.id);
                       }}
@@ -152,10 +191,16 @@ const DashboardAdmin = () => {
                       Update
                     </button>
                     <button
-                      className="btn btn-success btn-sm"
+                      className="btn btn-success btn-sm mr-2 me-2"
                       onClick={() => handleViewDetail(product.id)}
                     >
                       View
+                    </button>
+                    <button
+                      className="btn btn-danger btn-sm mr-2 me-2"
+                      onClick={() => handleDelete(product.id)}
+                    >
+                      Delete
                     </button>
                   </td>
                 </tr>
@@ -166,6 +211,7 @@ const DashboardAdmin = () => {
       </>
     );
   };
+
   return (
     <>
       <Navbar />
@@ -201,7 +247,7 @@ const DashboardAdmin = () => {
           }}
         >
           <h2>Update Product</h2>
-          <div className="form-group">
+          <div className="form-group mt-3">
             <label htmlFor="productName">Product Name</label>
             <input
               type="text"
@@ -216,7 +262,7 @@ const DashboardAdmin = () => {
               }
             />
           </div>
-          <div className="form-group">
+          <div className="form-group mt-3">
             <label htmlFor="desc">Description</label>
             <input
               type="text"
@@ -231,7 +277,7 @@ const DashboardAdmin = () => {
               }
             />
           </div>
-          <div className="form-group">
+          <div className="form-group mt-3">
             <label htmlFor="price">Price</label>
             <input
               type="number"
@@ -246,7 +292,7 @@ const DashboardAdmin = () => {
               }
             />
           </div>
-          <div className="form-group">
+          <div className="form-group mt-3">
             <label htmlFor="stock">Stock</label>
             <input
               type="number"
@@ -263,17 +309,111 @@ const DashboardAdmin = () => {
           </div>
           <button
             type="button"
-            className="btn btn-secondary"
+            className="btn btn-secondary mt-5 me-2"
             onClick={handleCloseModal}
           >
             Close
           </button>
           <button
             type="button"
-            className="btn btn-primary"
+            className="btn btn-primary mt-5"
             onClick={() => handleSaveUpdate()}
           >
             Save changes
+          </button>
+        </Modal>
+      </div>
+
+      <div className="m-2">
+        <Modal
+          isOpen={showAddModal}
+          onRequestClose={handleCloseModal}
+          contentLabel="Add Product Modal"
+          style={{
+            content: {
+              justifyContent: "center",
+              alignContent: "center",
+              marginBlockStart: "100px",
+              marginInline: "500px",
+              width: "50%",
+              height: "60%",
+            },
+          }}
+        >
+          <h2>Add Product</h2>
+          <div className="form-group mt-3">
+            <label htmlFor="productName">Product Name</label>
+            <input
+              type="text"
+              className="form-control"
+              id="productName"
+              value={newProductData.productName}
+              onChange={(e) =>
+                setNewProductData({
+                  ...newProductData,
+                  productName: e.target.value,
+                })
+              }
+            />
+          </div>
+          <div className="form-group mt-3">
+            <label htmlFor="desc">Description</label>
+            <input
+              type="text"
+              className="form-control"
+              id="desc"
+              value={newProductData.desc}
+              onChange={(e) =>
+                setNewProductData({
+                  ...newProductData,
+                  desc: e.target.value,
+                })
+              }
+            />
+          </div>
+          <div className="form-group mt-3">
+            <label htmlFor="price">Price</label>
+            <input
+              type="number"
+              className="form-control"
+              id="price"
+              value={newProductData.price}
+              onChange={(e) =>
+                setNewProductData({
+                  ...newProductData,
+                  price: e.target.value,
+                })
+              }
+            />
+          </div>
+          <div className="form-group mt-3">
+            <label htmlFor="stock">Stock</label>
+            <input
+              type="number"
+              className="form-control"
+              id="stock"
+              value={newProductData.stock}
+              onChange={(e) =>
+                setNewProductData({
+                  ...newProductData,
+                  stock: Number(e.target.value),
+                })
+              }
+            />
+          </div>
+          <button
+            type="button"
+            className="btn btn-secondary mt-5 me-2"
+            onClick={handleCloseModal}
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary mt-5"
+            onClick={() => handleSaveProduct()}
+          >
+            Add Product
           </button>
         </Modal>
       </div>
