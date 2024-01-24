@@ -11,6 +11,7 @@ import ProductDetailPage from "./pages/ProductDetailPage";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import { useEffect } from "react";
+import Register from "./pages/Register";
 
 function App() {
   const token = localStorage.getItem("token");
@@ -18,7 +19,7 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!token && location.pathname !== "/") {
+    if (!token) {
       navigate("/");
     }
     if (token && location.pathname === "/") {
@@ -42,6 +43,7 @@ function App() {
           </>
         ) : (
           <>
+            <Route path="/register" element={<Register />} />
             <Route path="/" element={<Login />} />
           </>
         )}
